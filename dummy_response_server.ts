@@ -5,7 +5,33 @@ for await (const request of defaultServer) {
   console.log(request.method);
   console.log(request.url);
 
-  if (request.method == "POST" && request.url == "/store-message") {
+  if (
+    request.method == "POST" &&
+    request.url == "/store-message" &&
+    request.contentLength
+  ) {
+    // read body and extract body
+    const buffer = new Uint8Array(request.contentLength);// long byte 
+    let totalBytesRead = 0 ;
+    while (true) {
+      // shouldn't read data once  instead well get multiple chunks of data
+      const bytesRead = await request.body.read(buffer);
+      if (bytesRead == null) {
+        break;
+      }
+      totalBytesRead += bytesRead;
+      // all Done
+      if (totalBytesRead >= request.contentLength) {
+          break;
+      }
+    }
+
+    // write buffer in text message
+    await Deno.writeFile('user-message.txt' ,buffer);
+    const decoder  = new TextDecoder();
+    const data  = decoder.decode(buffer);
+    console.log(data);
+
     const headers = new Headers();
     headers.set("Location", "/confirm");
     request.respond({ headers: headers, status: 303 }); //redirect status code
@@ -23,3 +49,4 @@ for await (const request of defaultServer) {
 }
 
 //> deno run --allow-net dummy_response_server.ts
+//> deno run --allow-net --allow-write=user-message.txt dummy_response_server.ts
