@@ -7,5 +7,6 @@ const inputBuffer = new Uint8Array();
 await Deno.stdin.read(inputBuffer);
 const content = parseBuffer(inputBuffer.toString());
 
-await Deno.writeFile('user-input.txt' , content , {create: false});
+// different type pass in writeFile
+await Deno.writeFile('user-input.txt' , inputBuffer , {create: false});
 console.log("Done");
