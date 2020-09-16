@@ -1,0 +1,7 @@
+{
+  "deno_args":[
+    "--allow-net",
+    "--unstable",
+    "--importmap=import_map.json"
+  ]
+}
