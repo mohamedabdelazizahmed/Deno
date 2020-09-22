@@ -5,7 +5,7 @@
           "desc": "Run the main server.",
     
 
-          "allow": ["env", "write" ,"net"]
+          "allow": ["env", "write" ,"net" ,"read"]
 
         }
       }

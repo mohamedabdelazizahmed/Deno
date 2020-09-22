@@ -1,36 +1,31 @@
 // >  deno cache app.ts  [force deno to look all your imports look and download and cache ]
 import { Application, Router } from "https://deno.land/x/oak@v6.2.0/mod.ts";
+import { renderFileToString } from 'https://deno.land/x/dejs@0.8.0/mod.ts';
 
 const app = new Application();
 const router = new Router();
 
 // add new Route for www.test.com
-router.get('/' , (ctx)=>{
-    ctx.response.body =`
-    <h2> + Add New Goal </h2>
-    <form action="/add-goal" method="post">
-        <input type="text" name="new-goal" />
-        <button type="submit"> Add Goal</button>
-    </form>`;
-    ctx.response.type='text/html';
-});
- 
-router.post('/add-goal' , async(ctx)=>{
-    //get data from body
-    const body = await ctx.request.body();
-        ctx.response.redirect('/');
-    
-    
-
+router.get("/", async (ctx) => {
+  const body = await renderFileToString(Deno.cwd() + "/course_goals.ejs", {
+    title: "MyGoals",
+  });
+  ctx.response.body = body;
 });
 
-app.use((ctx ,next)=>{console.log("My Own middleware before router.routes");next();});
-// to Register router and run it 
+router.post("/add-goal", async (ctx) => {
+  //get data from body
+  const body = await ctx.request.body();
+  ctx.response.redirect("/");
+});
+
+app.use((ctx, next) => {
+  console.log("My Own middleware before router.routes");
+  next();
+});
+// to Register router and run it
 app.use(router.routes());
 app.use(router.allowedMethods());
-
-
-
 
 // [middleware]function executed for every request
 // app.use(async(ctx, next) => {
