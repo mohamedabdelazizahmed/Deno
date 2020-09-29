@@ -1,6 +1,6 @@
 // >  deno cache app.ts  [force deno to look all your imports look and download and cache ]
-import { Application, Router } from "https://deno.land/x/oak@v6.2.0/mod.ts";
-import { renderFileToString } from 'https://deno.land/x/dejs@0.8.0/mod.ts';
+import { Application, Router ,send } from "https://deno.land/x/oak@v6.2.0/mod.ts";
+import { renderFileToString ,renderFile } from 'https://deno.land/x/dejs@0.8.0/mod.ts';
 
 const app = new Application();
 const router = new Router();
@@ -26,6 +26,13 @@ app.use((ctx, next) => {
 // to Register router and run it
 app.use(router.routes());
 app.use(router.allowedMethods());
+// this is middleware able to fetch static file
+// to send file app.css
+app.use(async(ctx)=>{
+  // function send does not send back response 
+  // but manipulate in response in ctx object we need await to manipulate to finish 
+  await send(ctx , ctx.request.url.pathname); //pathname =>/app.css
+})
 
 // [middleware]function executed for every request
 // app.use(async(ctx, next) => {
