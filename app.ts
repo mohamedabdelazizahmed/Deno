@@ -1,5 +1,5 @@
 // >  deno cache app.ts  [force deno to look all your imports look and download and cache ]
-import { Application, Router ,send } from "https://deno.land/x/oak@v6.2.0/mod.ts";
+import { Application, Router ,send, isErrorStatus, isHttpError, Status } from "https://deno.land/x/oak@v6.2.0/mod.ts";
 import { renderFileToString ,renderFile } from 'https://deno.land/x/dejs@0.8.0/mod.ts';
 
 const app = new Application();
@@ -34,7 +34,19 @@ router.post("/add-goal", async (ctx) => {
 
 });
 
-
+app.use(async(ctx ,next)=>{
+  try {
+    await next();
+  } catch (error) {
+    if (isHttpError(error) && error.status == Status.NotFound) {
+      // ctx.response.body = 'This resource was not found , sorry ';
+      const body = await renderFileToString(Deno.cwd() + "/not_found.ejs", {});
+      ctx.response.body = body;
+    }else{
+      ctx.response.body = 'Something went wrong , Sorry! please try again later';
+    }
+  }
+})
 
 // to Register router and run it
 app.use(router.routes());
