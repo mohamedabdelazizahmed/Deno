@@ -23,6 +23,9 @@ router.post("/add-goal", async (ctx) => {
       const newGoalTitle = value.get('newGoal');
       // console.log(value.get('newGoal'));
       console.log(newGoalTitle);
+      if (newGoalTitle.trim().length === 0) {
+        return ctx.response.redirect('/'); //return ensure other code not executed 
+      }
       const newGoal = {id: new Date().toISOString() , name: newGoalTitle};
       console.log(newGoal);
       courseGoals.push(newGoal);
