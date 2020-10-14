@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="./app.css">
 </head>
 
 <body>
@@ -13,12 +13,14 @@
     <div>
         <h2> + Add New Goal </h2>
         <form action="/add-goal" method="post">
-            <input type="text" name="new-goal" />
+            <input type="text" name="newGoal" />
             <button type="submit"> Add Goal</button>
         </form>
     </div>
     <ul>
-        <li>....</li>
+        <% for(let i=0 ; i<goals.length ; i++){%>
+        <li><%= goals[i].name %> </li>
+        <% } %>
     </ul>
 </body>
 
