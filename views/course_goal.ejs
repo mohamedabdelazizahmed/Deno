@@ -12,8 +12,11 @@
 
 <body>
     <div id="goal">
-        <%= goalText %> 
+        <%= goal.name %> 
     </div>
+    <form action="/<%= goal.id %> " method="post">
+        <button type="submit">DELETE GOAL</button>
+    </form>
 </body>
 
 </html>

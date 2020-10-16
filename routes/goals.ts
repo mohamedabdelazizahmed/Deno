@@ -3,7 +3,7 @@ import {  Router ,State,HttpError, Status} from "https://deno.land/x/oak@v6.2.0/
 import { renderFileToString } from 'https://deno.land/x/dejs@0.8.0/mod.ts';
 const router = new Router();
 
-const courseGoals:{name:string; id:string}[] = [];
+let courseGoals:{name:string; id:string}[] = [];
 // READ
 router.get("/", async (ctx) => {
   const body = await renderFileToString(Deno.cwd() + "/views/course_goals.ejs", {
@@ -23,7 +23,7 @@ router.get("/:goalId", async (ctx) => {
     // throw new Error('Did not find goal');
   }
   const body = await renderFileToString(Deno.cwd() + "/views/course_goal.ejs", {
-    goalText:goal.name     //courseGoals.find(goal=>goal.id == id)?.name //? => if you don't expression return null
+    goal:goal     //courseGoals.find(goal=>goal.id == id)?.name //? => if you don't expression return null
   });
   ctx.response.body = body;
 });
@@ -47,4 +47,10 @@ router.post("/add-goal", async (ctx) => {
 
 });
 
+
+router.post("/:goalId", async (ctx) => {
+  const id = ctx.params.goalId;
+  courseGoals = courseGoals.filter(goal=>goal.id !== id);
+  ctx.response.redirect('/');
+});
 export default router;
