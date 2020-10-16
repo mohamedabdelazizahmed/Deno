@@ -26,7 +26,7 @@ app.use(goalsRouter.allowedMethods());
 app.use(async(ctx)=>{
   // function send does not send back response 
   // but manipulate in response in ctx object we need await to manipulate to finish 
-  await send(ctx , ctx.request.url.pathname,{root:'static'}); //pathname =>/app.css
+  await send(ctx , ctx.request.url.pathname); //pathname =>/app.css
 })
 
 app.listen({ port: 3000 });
