@@ -14,9 +14,22 @@
     <div id="goal">
         <%= goal.name %> 
     </div>
-    <form action="/<%= goal.id %> " method="post">
-        <button type="submit">DELETE GOAL</button>
-    </form>
+    <div class="delete-goal">
+        <form action="/<%= goal.id %> " method="post">
+            <button type="submit">DELETE GOAL</button>
+        </form>
+    </div>
+
+    <div class="update-goal">
+        <div>
+            <h2>  - Update Goal </h2> 
+            <form action="/update-goal " method="post">
+                <input type="hidden" name="goal-id" value="<%= goal.id %> ">
+                <input type="text" name="update-goal" value="<%= goal.name %> "/>
+                <button type="submit"> update Goal</button>
+            </form>
+        </div>
+    </div>
 </body>
 
 </html>

@@ -48,6 +48,34 @@ router.post("/add-goal", async (ctx) => {
 });
 
 
+router.post("/update-goal", async (ctx) => {
+  console.log("... update The GOAL ...");
+  if (ctx.request.hasBody) {
+    const body = ctx.request.body();
+      const value = await body.value; // an object of parsed JSON
+      const updateGoalTitle = value.get('update-goal');
+      const updateGoalId = value.get('goal-id')as string;
+      // console.log(value.get('newGoal'));
+      // courseGoals.find(goal => goal.id === updateGoalId)?.name = updateGoalTitle;
+      console.log(courseGoals);
+      let goal = courseGoals.find(goal => {
+       return goal.id == updateGoalId
+      });
+      console.log(goal);
+      if (!goal) {
+        const error = new HttpError();
+        error.status = Status.NotFound; 
+        throw error;
+      }
+      goal.name = updateGoalTitle;
+      if (updateGoalTitle.trim().length === 0) {
+        return ctx.response.redirect('/'); //return ensure other code not executed 
+      }
+      ctx.response.redirect('/');  
+  }
+
+});
+
 router.post("/:goalId", async (ctx) => {
   const id = ctx.params.goalId;
   courseGoals = courseGoals.filter(goal=>goal.id !== id);
