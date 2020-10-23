@@ -1,75 +1,24 @@
 // >  deno cache app.ts  [force deno to look all your imports look and download and cache ]
-import {  Router ,State,HttpError, Status} from "https://deno.land/x/oak@v6.2.0/mod.ts";
-import { renderFileToString } from 'https://deno.land/x/dejs@0.8.0/mod.ts';
-
-import { CourseGoal } from "../models/course_goal.ts";
+import {
+  Router,
+} from "https://deno.land/x/oak@v6.2.0/mod.ts";
+import {
+  getAllGoals,
+  getSignalGoal,
+  createGoal,
+  updateGoal,
+  deleteGoal,
+} from "../controllers/goals_controller.ts";
 const router = new Router();
 
 // READ
-router.get("/", async (ctx) => {
-  const body = await renderFileToString(Deno.cwd() + "/views/course_goals.ejs", {
-    title: "MyGoals",
-    goals: CourseGoal.findAll()
-  });
-  ctx.response.body = body;
-});
+router.get("/", getAllGoals);
 // READ SINGLE ELEMENT
-router.get("/:goalId", async (ctx) => {
-  const id = ctx.params.goalId!;
-  const goal = CourseGoal.findById(id);
-  if (!goal) {
-    const error = new HttpError();
-    error.status = Status.NotFound;
-    throw error;
-  }
-  const body = await renderFileToString(Deno.cwd() + "/views/course_goal.ejs", {
-    goal:goal     //courseGoals.find(goal=>goal.id == id)?.name //? => if you don't expression return null
-  });
-  ctx.response.body = body;
-});
+router.get("/:goalId", getSignalGoal);
 
-router.post("/add-goal", async (ctx) => {
-  if (ctx.request.hasBody) {
-    const body = ctx.request.body();
-    console.log(body);
-      const value = await body.value; // an object of parsed JSON
-      const newGoalTitle = value.get('newGoal');
-      // console.log(value.get('newGoal'));
-      console.log(newGoalTitle);
-      if (newGoalTitle.trim().length === 0) {
-        return ctx.response.redirect('/'); //return ensure other code not executed 
-      }
-      CourseGoal.create(newGoalTitle);
-      ctx.response.redirect('/');  
-  }
+router.post("/add-goal", createGoal);
 
-});
+router.post("/update-goal", updateGoal);
 
-
-router.post("/update-goal", async (ctx) => {
-  console.log("... update The GOAL ...");
-  if (ctx.request.hasBody) {
-    const body = ctx.request.body();
-      const value = await body.value; // an object of parsed JSON
-      const updateGoalTitle = value.get('update-goal');
-      const updateGoalId = value.get('goal-id')as string;
-      // console.log(value.get('newGoal'));
-      // courseGoals.find(goal => goal.id === updateGoalId)?.name = updateGoalTitle;
-      try {
-        CourseGoal.update(updateGoalId, updateGoalTitle);
-        ctx.response.redirect('/');  
-      } catch (err) {
-        const error = new HttpError();
-        error.status = Status.NotFound; 
-        throw error;
-      }
-  }
-
-});
-
-router.post("/:goalId", async (ctx) => {
-  const id = ctx.params.goalId!;
-  CourseGoal.delete(id);
-  ctx.response.redirect('/');
-});
+router.post("/:goalId", deleteGoal);
 export default router;
